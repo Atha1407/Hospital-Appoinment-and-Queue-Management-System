@@ -6,7 +6,7 @@ import MockLogin from './components/MockLogin';
 import MockRegister from './components/MockRegister';
 import { Hero, About, Features, HowItWorks, Services, Statistics, Testimonials, CTA } from './components/Sections';
 import { AuthProvider } from './context/AuthProvider';
-
+import PatientDashboard from './components/dashboard/PatientDashboard';
 function AppContent() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
 
@@ -44,6 +44,8 @@ function AppContent() {
         return <MockRegister role="doctor" onNavigate={navigate} />;
       case '/receptionist/register':
         return <MockRegister role="receptionist" onNavigate={navigate} />;
+      case '/patient/dashboard':
+        return <PatientDashboard onNavigate={navigate} />;
       default:
         // Default to landing page
         return (

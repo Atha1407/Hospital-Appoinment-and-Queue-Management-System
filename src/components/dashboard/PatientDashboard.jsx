@@ -1,0 +1,117 @@
+import React, { useState } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { Calendar, Clock, Building2, Ticket } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+import Sidebar from './Sidebar';
+import TopNavbar from './TopNavbar';
+import { 
+  WelcomeCard, 
+  StatCard, 
+  UpcomingAppointment, 
+  QueueStatus, 
+  QuickActions, 
+  RecentAppointments, 
+  HealthTips 
+} from './DashboardWidgets';
+
+export default function PatientDashboard({ onNavigate }) {
+  const { user, logout } = useAuth();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // If there's no user, we might want to redirect to login.
+  // However, we can also just let AuthProvider handle it or show a fallback.
+  // For now, we assume user is present if they reached here, or they see "Guest".
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Sidebar Navigation */}
+      <Sidebar 
+        isOpen={isSidebarOpen} 
+        setIsOpen={setIsSidebarOpen} 
+        onLogout={() => {
+          logout();
+          onNavigate('/');
+        }} 
+      />
+
+      {/* Main Content Area */}
+      <div className="flex-1 lg:ml-72 transition-all duration-300">
+        <TopNavbar 
+          onMenuClick={() => setIsSidebarOpen(true)} 
+          onNavigate={onNavigate} 
+        />
+
+        <main className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="space-y-6"
+          >
+            {/* Top Section: Welcome & Health Tip */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <WelcomeCard userName={user?.name || 'Guest'} />
+              </div>
+              <div className="lg:col-span-1 h-full">
+                <HealthTips />
+              </div>
+            </div>
+
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <StatCard 
+                title="Total Visits" 
+                value="12" 
+                trend="+2 this year"
+                icon={Calendar} 
+                colorClass="bg-blue-100 text-blue-600" 
+              />
+              <StatCard 
+                title="Pending Labs" 
+                value="2" 
+                icon={Clock} 
+                colorClass="bg-orange-100 text-orange-600" 
+              />
+              <StatCard 
+                title="Preferred Hospital" 
+                value="City Gen" 
+                icon={Building2} 
+                colorClass="bg-purple-100 text-purple-600" 
+              />
+              <StatCard 
+                title="Queue Position" 
+                value="#42" 
+                icon={Ticket} 
+                colorClass="bg-teal-100 text-teal-600" 
+              />
+            </div>
+
+            {/* Middle Section: Next Appt, Queue, Quick Actions */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <UpcomingAppointment />
+              <QueueStatus />
+              <QuickActions />
+            </div>
+
+            {/* Bottom Section: Recent Appointments */}
+            <div className="grid grid-cols-1 gap-6">
+              <RecentAppointments />
+            </div>
+          </motion.div>
+        </main>
+      </div>
+    </div>
+  );
+}

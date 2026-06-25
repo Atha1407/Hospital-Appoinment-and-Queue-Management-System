@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Activity, Menu, X, ChevronDown, User, LayoutDashboard, Settings, LogOut } from 'lucide-react';
+import { Activity, Menu, X, ChevronDown, LayoutDashboard, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { AnimatePresence, motion } from 'framer-motion';
 
@@ -87,45 +87,29 @@ export default function Navbar({ onNavigate }) {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-3 w-64 bg-white border border-slate-100 rounded-2xl shadow-xl py-2 z-50 origin-top-right"
+                      className="absolute right-0 mt-3 w-60 bg-white border border-slate-100 rounded-2xl shadow-xl z-50 origin-top-right"
                     >
-                      <div className="px-4 py-3 border-b border-slate-50">
+                      <div className="px-4 py-3 border-b border-slate-100">
                         <p className="text-sm font-bold text-slate-800 truncate">{user.name}</p>
                         <p className="text-xs text-slate-500 capitalize mt-0.5 font-medium">{user.role}</p>
                       </div>
-                      <div className="py-1.5">
-                        <button
-                          onClick={() => { setIsDropdownOpen(false); onNavigate('/profile'); }}
-                          className="flex items-center w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-primary transition-colors text-left font-medium"
-                        >
-                          <User className="h-4 w-4 mr-3 text-slate-400" />
-                          My Profile
-                        </button>
+                      <div className="p-2 space-y-2">
                         <button
                           onClick={() => { setIsDropdownOpen(false); onNavigate(`/${user.role}/dashboard`); }}
-                          className="flex items-center w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-primary transition-colors text-left font-medium"
+                          className="flex items-center w-full px-3 py-2.5 text-sm text-slate-700 hover:bg-blue-50 hover:text-primary rounded-xl transition-all duration-200 text-left font-medium group cursor-pointer"
                         >
-                          <LayoutDashboard className="h-4 w-4 mr-3 text-slate-400" />
+                          <LayoutDashboard className="h-4 w-4 mr-3 text-slate-400 group-hover:text-primary transition-colors" />
                           <span className="capitalize">{user.role} Dashboard</span>
                         </button>
-                        <button
-                          onClick={() => { setIsDropdownOpen(false); onNavigate('/settings'); }}
-                          className="flex items-center w-full px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-primary transition-colors text-left font-medium"
-                        >
-                          <Settings className="h-4 w-4 mr-3 text-slate-400" />
-                          Settings
-                        </button>
-                      </div>
-                      <div className="border-t border-slate-50 pt-1.5 mt-1.5">
                         <button
                           onClick={() => {
                             setIsDropdownOpen(false);
                             logout();
                             onNavigate('/');
                           }}
-                          className="flex items-center w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors text-left font-semibold cursor-pointer"
+                          className="flex items-center w-full px-3 py-2.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-xl transition-all duration-200 text-left font-semibold group cursor-pointer"
                         >
-                          <LogOut className="h-4 w-4 mr-3 text-red-500" />
+                          <LogOut className="h-4 w-4 mr-3 text-red-500 group-hover:text-red-700 transition-colors" />
                           Logout
                         </button>
                       </div>
@@ -182,23 +166,13 @@ export default function Navbar({ onNavigate }) {
                     </div>
                   </div>
                   
-                  <div className="space-y-1">
-                    <button
-                      onClick={() => {
-                        setIsMobileMenuOpen(false);
-                        onNavigate('/profile');
-                      }}
-                      className="flex items-center w-full px-3 py-2.5 text-slate-700 hover:bg-slate-50 hover:text-primary rounded-lg text-left text-sm font-medium transition-colors"
-                    >
-                      <User className="h-4 w-4 mr-3 text-slate-400" />
-                      My Profile
-                    </button>
+                  <div className="space-y-2 mt-2">
                     <button
                       onClick={() => {
                         setIsMobileMenuOpen(false);
                         onNavigate(`/${user.role}/dashboard`);
                       }}
-                      className="flex items-center w-full px-3 py-2.5 text-slate-700 hover:bg-slate-50 hover:text-primary rounded-lg text-left text-sm font-medium transition-colors"
+                      className="flex items-center w-full px-3 py-2.5 text-slate-700 hover:bg-blue-50 hover:text-primary rounded-xl text-left text-sm font-medium transition-all duration-200"
                     >
                       <LayoutDashboard className="h-4 w-4 mr-3 text-slate-400" />
                       <span className="capitalize">{user.role} Dashboard</span>
@@ -206,20 +180,10 @@ export default function Navbar({ onNavigate }) {
                     <button
                       onClick={() => {
                         setIsMobileMenuOpen(false);
-                        onNavigate('/settings');
-                      }}
-                      className="flex items-center w-full px-3 py-2.5 text-slate-700 hover:bg-slate-50 hover:text-primary rounded-lg text-left text-sm font-medium transition-colors"
-                    >
-                      <Settings className="h-4 w-4 mr-3 text-slate-400" />
-                      Settings
-                    </button>
-                    <button
-                      onClick={() => {
-                        setIsMobileMenuOpen(false);
                         logout();
                         onNavigate('/');
                       }}
-                      className="flex items-center w-full px-3 py-2.5 text-red-600 hover:bg-red-50 rounded-lg text-left text-sm font-bold transition-colors mt-2 cursor-pointer"
+                      className="flex items-center w-full px-3 py-2.5 text-red-600 hover:bg-red-50 hover:text-red-700 rounded-xl text-left text-sm font-bold transition-all duration-200 cursor-pointer"
                     >
                       <LogOut className="h-4 w-4 mr-3 text-red-500" />
                       Logout
