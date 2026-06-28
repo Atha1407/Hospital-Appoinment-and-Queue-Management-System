@@ -51,6 +51,15 @@ export default function MockLogin({ role, onNavigate }) {
     e.preventDefault();
     if (validate()) {
       login({ name: 'Atharva Ingle', email, role });
+      // Check for a pending redirect (e.g. from "Get Appointment" button)
+      try {
+        const redirect = localStorage.getItem('post_login_redirect');
+        if (redirect) {
+          localStorage.removeItem('post_login_redirect');
+          onNavigate(redirect);
+          return;
+        }
+      } catch (_) {}
       setIsSubmitted(true);
     }
   };

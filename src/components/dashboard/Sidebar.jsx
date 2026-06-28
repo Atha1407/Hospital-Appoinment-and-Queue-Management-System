@@ -12,15 +12,23 @@ import {
 } from 'lucide-react';
 
 const navItems = [
-  { icon: LayoutDashboard, label: 'Dashboard', active: true },
-  { icon: CalendarPlus, label: 'Book Appointment' },
-  { icon: CalendarClock, label: 'My Appointments' },
-  { icon: Activity, label: 'Queue Status' },
-  { icon: FileText, label: 'Medical History' },
-  { icon: User, label: 'Profile' },
+  { icon: LayoutDashboard, label: 'Dashboard', path: '/patient/dashboard' },
+  { icon: CalendarPlus, label: 'Book Appointment', path: '/patient/select-appointment' },
+  { icon: CalendarClock, label: 'My Appointments', path: '#' },
+  { icon: Activity, label: 'Queue Status', path: '#' },
+  { icon: FileText, label: 'Medical History', path: '#' },
+  { icon: User, label: 'Profile', path: '#' },
 ];
 
-export default function Sidebar({ isOpen, setIsOpen, onLogout }) {
+export default function Sidebar({ isOpen, setIsOpen, onLogout, onNavigate, currentPath = '/patient/dashboard' }) {
+  const handleNavClick = (e, path) => {
+    e.preventDefault();
+    if (window.innerWidth < 1024) setIsOpen(false);
+    if (path !== '#' && onNavigate) {
+      onNavigate(path);
+    }
+  };
+
   return (
     <>
       {/* Mobile Overlay */}
@@ -61,21 +69,19 @@ export default function Sidebar({ isOpen, setIsOpen, onLogout }) {
           <nav className="px-4 space-y-1.5">
             {navItems.map((item, index) => {
               const Icon = item.icon;
+              const isActive = currentPath === item.path;
               return (
                 <a
                   key={index}
-                  href="#"
+                  href={item.path}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
-                    item.active 
+                    isActive 
                       ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' 
                       : 'text-gray-600 hover:bg-gray-50 hover:text-blue-600'
                   }`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if(window.innerWidth < 1024) setIsOpen(false);
-                  }}
+                  onClick={(e) => handleNavClick(e, item.path)}
                 >
-                  <Icon className={`h-5 w-5 ${item.active ? 'text-white' : 'text-gray-400 group-hover:text-blue-600'} transition-colors`} />
+                  <Icon className={`h-5 w-5 ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-blue-600'} transition-colors`} />
                   <span className="font-medium">{item.label}</span>
                 </a>
               );

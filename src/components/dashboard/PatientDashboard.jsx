@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useAppointment } from '../../context/AppointmentContext';
 import { Calendar, Clock, Building2, Ticket } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 import Sidebar from './Sidebar';
 import TopNavbar from './TopNavbar';
+import ConfirmationBanner from '../appointment/ConfirmationBanner';
 import { 
   WelcomeCard, 
   StatCard, 
@@ -17,11 +19,8 @@ import {
 
 export default function PatientDashboard({ onNavigate }) {
   const { user, logout } = useAuth();
+  const { bookedAppointment, showSuccessBanner, dismissBanner } = useAppointment();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  // If there's no user, we might want to redirect to login.
-  // However, we can also just let AuthProvider handle it or show a fallback.
-  // For now, we assume user is present if they reached here, or they see "Guest".
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -39,6 +38,8 @@ export default function PatientDashboard({ onNavigate }) {
       <Sidebar 
         isOpen={isSidebarOpen} 
         setIsOpen={setIsSidebarOpen} 
+        onNavigate={onNavigate}
+        currentPath="/patient/dashboard"
         onLogout={() => {
           logout();
           onNavigate('/');
@@ -59,6 +60,14 @@ export default function PatientDashboard({ onNavigate }) {
             animate="visible"
             className="space-y-6"
           >
+            {/* Confirmation Banner */}
+            {showSuccessBanner && (
+              <ConfirmationBanner
+                onDismiss={dismissBanner}
+                onViewAppointment={() => onNavigate('/patient/appointment-confirmation')}
+              />
+            )}
+
             {/* Top Section: Welcome & Health Tip */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
@@ -86,13 +95,13 @@ export default function PatientDashboard({ onNavigate }) {
               />
               <StatCard 
                 title="Preferred Hospital" 
-                value="City Gen" 
+                value={bookedAppointment?.hospital?.split(' ')[0] || 'City Gen'}
                 icon={Building2} 
                 colorClass="bg-purple-100 text-purple-600" 
               />
               <StatCard 
-                title="Queue Position" 
-                value="#42" 
+                title="Queue Token" 
+                value={bookedAppointment?.token || '--'} 
                 icon={Ticket} 
                 colorClass="bg-teal-100 text-teal-600" 
               />
@@ -100,8 +109,8 @@ export default function PatientDashboard({ onNavigate }) {
 
             {/* Middle Section: Next Appt, Queue, Quick Actions */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <UpcomingAppointment />
-              <QueueStatus />
+              <UpcomingAppointment appointment={bookedAppointment} onNavigate={onNavigate} />
+              <QueueStatus appointment={bookedAppointment} />
               <QuickActions />
             </div>
 

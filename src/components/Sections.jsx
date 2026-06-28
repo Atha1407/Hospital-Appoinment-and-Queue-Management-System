@@ -1,8 +1,21 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, Hospital, Users, ShieldCheck, Stethoscope, ArrowRight, UserPlus, CheckCircle2, Star, Quote, Activity } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export const Hero = ({ onNavigate }) => {
+  const { user } = useAuth();
+
+  const handleGetAppointment = () => {
+    if (user) {
+      onNavigate('/patient/select-appointment');
+    } else {
+      // Store intended destination so login can redirect back
+      try { localStorage.setItem('post_login_redirect', '/patient/select-appointment'); } catch (_) {}
+      onNavigate('/patient/login');
+    }
+  };
+
   return (
     <section id="home" className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
       <div className="absolute inset-0 z-0">
@@ -29,7 +42,7 @@ export const Hero = ({ onNavigate }) => {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
               <button 
-                onClick={() => onNavigate('/role-selection/login')}
+                onClick={handleGetAppointment}
                 className="w-full sm:w-auto px-8 py-4 bg-primary hover:bg-primary-dark text-white rounded-full font-semibold text-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center cursor-pointer"
               >
                 Get Appointment <ArrowRight className="ml-2 h-5 w-5" />
